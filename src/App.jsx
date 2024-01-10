@@ -1,35 +1,72 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { Component } from 'react';
+import './App.css';
 
-function App() {
-  const [count, setCount] = useState(0)
+// function App() {
+//   return (
+//     <div className="App">
+//       <header className="App-header">
+//         <img src={logo} className="App-logo" alt="logo" />
+//         <p>
+//           Edit <code>src/App.js</code> and save to reload.
+//         </p>
+//         <a
+//           className="App-link"
+//           href="https://reactjs.org"
+//           target="_blank"
+//           rel="noopener noreferrer"
+//         >
+//           Learn React
+//         </a>
+//       </header>
+//     </div>
+//   );
+// }
 
-  return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+class App extends Component {
+  constructor(){
+    super();
+
+    this.state = {
+      students: [], 
+  };
+  console.log('constructor');
+  }
+
+  componentDidMount() {
+    console.log('component did mount');
+    fetch('https://hp-api.onrender.com/api/characters/students') 
+      .then((response) => response.json())
+      .then(users => this.setState(
+        () => { return {students: users} 
+      },
+      () => {
+        console.log(this.state)
+      }
+      )) //this.setState({monsters: users}))
+  }
+
+  render() {
+    console.log('render');
+    return (
+    <div className="App">
+      <input className='search-box' type='search' placeholder='search students' onChange={(event) => {
+        console.log(event.target.value)
+        const searchString = event.target.value.toLocaleLowerCase()
+        const filteredStudents = this.state.students.filter((student) => {
+            return student.name.toLocaleLowerCase().includes(searchString);
+        });
+
+         this.setState(() => {
+          return { students: filteredStudents};
+        })
+      }}/>
+      {this.state.students.map( (student) => {
+        return <div key={student.id}><h1>{student.name} - {student.house}</h1></div>
+      })
+      }
+    </div>
+  );
+  }
 }
 
-export default App
+export default App;
