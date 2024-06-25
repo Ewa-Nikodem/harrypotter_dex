@@ -1,5 +1,7 @@
 import { Component } from 'react';
 import './App.css';
+import CardList from './components/card-list/card-list.component';
+import SearchBox from './components/search-box/search-box.component';
 
 // function App() {
 //   return (
@@ -28,6 +30,7 @@ class App extends Component {
 
     this.state = {
       students: [], 
+      searchField: ''
   };
   console.log('constructor');
   }
@@ -45,25 +48,37 @@ class App extends Component {
       )) //this.setState({monsters: users}))
   }
 
+  onSearchChange = (event) => {
+
+    const searchField = event.target.value.toLocaleLowerCase()
+    
+    this.setState(()=> {
+      return(
+        {searchField}
+      )}, () => {console.log("notghin")}
+    )
+      }
   render() {
     console.log('render');
-    return (
-    <div className="App">
-      <input className='search-box' type='search' placeholder='search students' onChange={(event) => {
-        console.log(event.target.value)
-        const searchString = event.target.value.toLocaleLowerCase()
-        const filteredStudents = this.state.students.filter((student) => {
-            return student.name.toLocaleLowerCase().includes(searchString);
-        });
 
-         this.setState(() => {
-          return { students: filteredStudents};
-        })
-      }}/>
-      {this.state.students.map( (student) => {
-        return <div key={student.id}><h1>{student.name} - {student.house}</h1></div>
-      })
-      }
+    const {students, searchField, } = this.state;
+    const {onSearchChange} = this;
+
+    const filteredStudents = students.filter((student) => {
+        return student.name.toLocaleLowerCase().includes(searchField);
+    });
+
+    return (
+
+    <div className="App">
+      <h1 className='app-title'>Harry Potter Dex</h1>
+      
+      <SearchBox
+        className='students-search-box'
+        onSearchHandler={onSearchChange}
+        placeholder='search characters'/>
+
+      <CardList students={filteredStudents}/>
     </div>
   );
   }
