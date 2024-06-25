@@ -7,12 +7,14 @@ class CardList extends Component {
         const {students} = this.props;
 
         return (
+            <div className="card-list-container">
             <div className="card-list">
                 {students.map(student => {
                     return (
                         <Card key={student.id} students={student}/>
                     )
                 })}
+            </div>
             </div>
         )
     }
